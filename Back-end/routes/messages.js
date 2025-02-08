@@ -4,14 +4,14 @@ const express = require("express")
 
 const router = express.Router()
 
-router.post("/send", (req, res) => {
+router.post("/send", async(req, res) => {
     const {user, message} = req.body;
 
     if(!user || !message) {
         res.status(400).json({error: "The user and the message are required"})
     }
 
-    redisClient.set(`msg: ${Date.now()}`, JSON.stringify({user, message}));
+    await redisClient.set(`msg: ${Date.now()}`, JSON.stringify({user, message}));
 
     sendMessage(process.env.KAFKA_TOPIC, {user, message})
 

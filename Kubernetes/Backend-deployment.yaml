@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: ramin709/backend:latest
+        image: ramin709/backend
         ports:
         - containerPort: 5000
         env:
