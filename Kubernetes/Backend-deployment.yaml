@@ -30,7 +30,10 @@ kind: Service
 metadata:
   name: backend
 spec:
-  ports:
-    - port: 5000
   selector:
     app: backend
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000  # Needed to forward requests correctly
+
