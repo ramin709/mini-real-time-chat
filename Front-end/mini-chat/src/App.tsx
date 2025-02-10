@@ -8,7 +8,7 @@ function App() {
   const sendMessage = async () => {
     try {
       console.log(message)
-      const res = await axios.post("http://localhost:5000/messages/send", {message: message.message, user: message.user});
+      const res = await axios.post("http://backend:5000/messages/send", {message: message.message, user: message.user});
       console.log(res);
       setResponse(res.data);
     } catch (error) {
