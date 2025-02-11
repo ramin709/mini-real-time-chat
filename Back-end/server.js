@@ -19,7 +19,7 @@ app.use("/messages", router);
 
 const PORT = process.env.PORT || 5000
 
-mongoose.connect("mongodb://mongodb-0.mongodb.default.svc.cluster.local:27017/messagesDB", {
+mongoose.connect("mongodb://mongo-stateful-0.mongodb.default.svc.cluster.local:27017/messagesDB", {
     useNewURLParser: true,
     useUnifiedTopology: true,
     replicaSet: "rs0"
