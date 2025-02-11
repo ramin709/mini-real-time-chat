@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const mongoose = require('mongoose');
 const http = require('http');
 const cors = require('cors');
 const router = require('./routes/messages.js');
@@ -17,6 +18,13 @@ app.use(express.json());
 app.use("/messages", router);
 
 const PORT = process.env.PORT || 5000
+
+mongoose.connect("mongodb://mongodb-0.mongodb.default.svc.cluster.local:27017/messagesDB", {
+    useNewURLParser: true,
+    useUnifiedTopology: true,
+    replicaSet: "rs0"
+}).then(() => console.log("MongoDB is connected"))
+.catch(error => console.log("MongoDB failed to connect"))
 
 server.listen(PORT, () => {
     console.log("Server is on")
