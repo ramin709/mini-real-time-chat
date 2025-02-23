@@ -26,11 +26,11 @@ spec:
             - "--bind_ip"
             - "0.0.0.0"
         volumeMounts:
-        - name: mongo-storage
+        - name: mongo-pvc
           mountPath: /data/db
   volumeClaimTemplates:
   - metadata:
-      name: mongo-storage
+      name: mongo-pvc
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:

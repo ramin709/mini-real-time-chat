@@ -2,13 +2,13 @@ import { useState } from "react";
 import axios from "axios";
 
 function App() {
-  const [message, setMessage] = useState({user: "", message: ""});
+  const [message, setMessage] = useState({user: "", content: ""});
   const [response, setResponse] = useState<String | null>(null);
 
   const sendMessage = async () => {
     try {
       console.log(message)
-      const res = await axios.post("http://backend:5000/messages/send", {message: message.message, user: message.user});
+      const res = await axios.post("http://backend:5000/messages/send", {content: message.content, user: message.user});
       console.log(res);
       setResponse(res.data);
     } catch (error) {
@@ -23,7 +23,7 @@ function App() {
       <input
         type="text"
         placeholder="Enter message..."
-        onChange={(e) => setMessage({...message, message: e.target.value})}
+        onChange={(e) => setMessage({...message, content: e.target.value})}
         style={{ padding: "10px", width: "300px" }}
       />
       <input

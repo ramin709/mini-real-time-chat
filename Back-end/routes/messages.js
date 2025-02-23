@@ -6,17 +6,17 @@ const MessageModel = require("../models/Message.js")
 const router = express.Router()
 
 router.post("/send", async(req, res) => {
-    const {user, message} = req.body;
+    const {user, content} = req.body;
 
-    if(!user || !message) {
+    if(!user || !content) {
         res.status(400).json({error: "The user and the message are required"})
     }
 
-    await redisClient.set(`msg: ${Date.now()}`, JSON.stringify({user, message}));
+    await redisClient.set(`msg: ${Date.now()}`, JSON.stringify({user, content}));
 
-    await MessageModel.create({user, message, timestamp: Date.now()})
+    await MessageModel.create({user, content, timestamp: Date.now()})
 
-    sendMessage(process.env.KAFKA_TOPIC, {user, message})
+    sendMessage(process.env.KAFKA_TOPIC, {user, content})
 
     res.status(200).json({success: true, message: "Message sent!"})
 })
