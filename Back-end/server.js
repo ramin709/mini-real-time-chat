@@ -19,12 +19,11 @@ app.use("/messages", router);
 
 const PORT = process.env.PORT || 5000
 
-mongoose.connect("mongodb://mongo-stateful-0.mongodb.default.svc.cluster.local:27017/messagesDB", {
+mongoose.connect("mongodb://mongo-stateful-0.mongodb:27017,mongo-stateful-1.mongodb:27017,mongo-stateful-2.mongodb:27017/messagesDB?replicaSet=rs0", {
     useNewURLParser: true,
     useUnifiedTopology: true,
-    replicaSet: "rs0"
 }).then(() => console.log("MongoDB is connected"))
-.catch(error => console.log("MongoDB failed to connect"))
+    .catch(error => console.log("MongoDB failed to connect"))
 
 server.listen(PORT, () => {
     console.log("Server is on")
