@@ -1,10 +1,14 @@
-const { createClient } = require("redis");
+const { createCluster } = require("redis");
 
-const redisClient = createClient({
-    socket: {
-        host: process.env.REDIS_HOST || "redis",  // Kubernetes service name
-        port: 6379
-    }
+const redisClient = createCluster({
+    rootNodes: [
+        { url: "redis://redis-stateful-0.redis.default.svc.cluster.local:6379" },
+        { url: "redis://redis-stateful-1.redis.default.svc.cluster.local:6379" },
+        { url: "redis://redis-stateful-2.redis.default.svc.cluster.local:6379" },
+        { url: "redis://redis-stateful-3.redis.default.svc.cluster.local:6379" },
+        { url: "redis://redis-stateful-4.redis.default.svc.cluster.local:6379" },
+        { url: "redis://redis-stateful-5.redis.default.svc.cluster.local:6379" },
+    ],
 });
 
 redisClient.on("error", (err) => console.error("Redis Client Error", err));
