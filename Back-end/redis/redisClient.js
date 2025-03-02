@@ -1,4 +1,5 @@
 const { createCluster } = require("redis");
+const CircuitBreaker = require("opossum")
 
 const redisClient = createCluster({
     rootNodes: [
@@ -22,4 +23,24 @@ redisClient.on("error", (err) => console.error("Redis Client Error", err));
     }
 })();
 
-module.exports = redisClient;
+const storeInRedis = async(key, value, ex) => {
+    try {
+
+        await redisClient.set(key, value , {EX: 122400})
+        
+    } catch (error) {
+        console.log("Failed to add in redis:", error.message);
+    }
+}
+
+const redisBreaker = new CircuitBreaker(storeInRedis, {
+    errorThresholdPercentage: 50,
+    resetTimeout: 10000,
+    timeout: 5000
+})
+
+redisBreaker.on("open", () => console.log("RedisBreaker is open"));
+redisBreaker.on("halfOpen", () => console.log("RedisBreaker is half open"));
+redisBreaker.on("close", () => console.log("RedisBreaker is close"));
+
+module.exports = {redisClient, redisBreaker};
