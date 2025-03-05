@@ -25,6 +25,26 @@ spec:
             - "rs0"
             - "--bind_ip"
             - "0.0.0.0"
+        livenessProbe:
+            exec:
+              command:
+                - mongosh
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+              - mongosh
+              - --eval
+              - "db.runCommand({ isMaster: 1 })"
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         volumeMounts:
         - name: mongo-pvc
           mountPath: /data/db

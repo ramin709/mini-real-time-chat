@@ -1,5 +1,5 @@
 const { createCluster } = require("redis");
-const CircuitBreaker = require("opossum")
+const CircuitBreaker = require("opossum");
 
 const redisClient = createCluster({
     rootNodes: [
@@ -12,35 +12,42 @@ const redisClient = createCluster({
     ],
 });
 
-redisClient.on("error", (err) => console.error("Redis Client Error", err));
+// Add a proper connection check
+redisClient.on("error", (err) => console.error("Redis Client Error:", err));
 
-(async () => {
+const connectRedis = async () => {
     try {
-        await redisClient.connect();  // Ensure the client is connected before use
+        await redisClient.connect();
         console.log("Connected to Redis");
     } catch (error) {
         console.error("Error connecting to Redis:", error);
     }
-})();
+};
 
-const storeInRedis = async(key, value, ex) => {
-    try {
+// Ensure Redis connection before exporting
+connectRedis();
 
-        await redisClient.set(key, value , {EX: 122400})
-        
-    } catch (error) {
-        console.log("Failed to add in redis:", error.message);
-    }
-}
+const storeInRedis = (key, value) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const node = await redisClient.getSlotMaster(key); // Ensure request goes to the correct node
+            await node.set(key, value, { EX: 122400 });
+            resolve();
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
 
+// Circuit breaker setup
 const redisBreaker = new CircuitBreaker(storeInRedis, {
     errorThresholdPercentage: 50,
     resetTimeout: 10000,
-    timeout: 5000
-})
+    timeout: 5000,
+});
 
 redisBreaker.on("open", () => console.log("RedisBreaker is open"));
 redisBreaker.on("halfOpen", () => console.log("RedisBreaker is half open"));
-redisBreaker.on("close", () => console.log("RedisBreaker is close"));
+redisBreaker.on("close", () => console.log("RedisBreaker is closed"));
 
-module.exports = {redisClient, redisBreaker};
+module.exports = { redisClient, redisBreaker };
