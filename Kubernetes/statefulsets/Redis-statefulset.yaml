@@ -23,10 +23,14 @@ spec:
         - name: redis-config
           mountPath: /etc/redis
         - name: redis-data
-          mountPath: /data
+          mountPath: /data  # Stores nodes.conf and AOF/RDB files
+
       volumes:
-          - name: redis-config
-            configMap:
-              name: redis-config
-          - name: redis-data
-            emptyDir: {}  # Change to persistent storage if needed
+        - name: redis-config
+          configMap:
+            name: redis-config
+        # Remove 'emptyDir' and replace with a PVC
+        - name: redis-pvc
+          persistentVolumeClaim:
+            claimName: redis-pvc  # Reference to PVC
+
