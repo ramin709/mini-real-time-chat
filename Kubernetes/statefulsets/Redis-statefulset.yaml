@@ -16,9 +16,20 @@ spec:
       containers:
       - name: redis
         image: redis:7.0
-        command: ["redis-server", "/etc/redis/redis.conf", "--cluster-enabled", "yes", "--cluster-config-file", "/data/nodes.conf", "--cluster-node-timeout", "5000"]
+        command: ["redis-server", "/etc/redis/redis.conf"]
         ports:
         - containerPort: 6379
+        env:
+        - name: REDIS_USER
+          valueFrom:
+            secretKeyRef:
+              name: redis-secret
+              key: REDIS_USER
+        - name: REDIS_PASS
+          valueFrom:
+            secretKeyRef:
+              name: redis-secret
+              key: REDIS_PASS
         volumeMounts:
         - name: redis-config
           mountPath: /etc/redis

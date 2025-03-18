@@ -27,4 +27,6 @@ mongoose.connect("mongodb://mongo-stateful-0.mongodb:27017,mongo-stateful-1.mong
 
 server.listen(PORT, () => {
     console.log("Server is on")
+    console.log("The username: ", process.env.REDIS_USER)
+    console.log("The pass: ", process.env.REDIS_PASS)
 })

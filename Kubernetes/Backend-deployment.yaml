@@ -24,6 +24,16 @@ spec:
               value: "chat-topic"
             - name: REDIS_HOST
               value: "redis"
+            - name: REDIS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_USER
+            - name: REDIS_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PASS
 ---
 apiVersion: v1
 kind: Service

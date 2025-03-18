@@ -1,16 +1,19 @@
+require('dotenv').config();
+
 const { createCluster } = require("redis");
 const CircuitBreaker = require("opossum");
 
 const redisClient = createCluster({
     rootNodes: [
-        { url: "redis://redis-stateful-0.redis.default.svc.cluster.local:6379" },
-        { url: "redis://redis-stateful-1.redis.default.svc.cluster.local:6379" },
-        { url: "redis://redis-stateful-2.redis.default.svc.cluster.local:6379" },
-        { url: "redis://redis-stateful-3.redis.default.svc.cluster.local:6379" },
-        { url: "redis://redis-stateful-4.redis.default.svc.cluster.local:6379" },
-        { url: "redis://redis-stateful-5.redis.default.svc.cluster.local:6379" },
+        { url: `redis://:${process.env.REDIS_PASS}@redis-stateful-0.redis.default.svc.cluster.local:6379`, username: process.env.REDIS_USER },
+        { url: `redis://:${process.env.REDIS_PASS}@redis-stateful-1.redis.default.svc.cluster.local:6379`, username: process.env.REDIS_USER },
+        { url: `redis://:${process.env.REDIS_PASS}@redis-stateful-2.redis.default.svc.cluster.local:6379`, username: process.env.REDIS_USER },
+        { url: `redis://:${process.env.REDIS_PASS}@redis-stateful-3.redis.default.svc.cluster.local:6379`, username: process.env.REDIS_USER },
+        { url: `redis://:${process.env.REDIS_PASS}@redis-stateful-4.redis.default.svc.cluster.local:6379`, username: process.env.REDIS_USER },
+        { url: `redis://:${process.env.REDIS_PASS}@redis-stateful-5.redis.default.svc.cluster.local:6379`, username: process.env.REDIS_USER },
     ],
 });
+
 
 // Add a proper connection check
 redisClient.on("error", (err) => console.error("Redis Client Error:", err));
