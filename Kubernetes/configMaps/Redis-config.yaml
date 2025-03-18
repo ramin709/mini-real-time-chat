@@ -4,8 +4,11 @@ metadata:
   name: redis-config
 data:
   redis.conf: |
+    aclfile /etc/redis/acl/redis-users.acl
     port 6379
     cluster-enabled yes
     cluster-config-file nodes.conf
     cluster-node-timeout 5000
     appendonly yes
+    requirepass ${REDIS_PASS}
+    masterauth ${REDIS_PASS}
